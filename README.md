@@ -64,7 +64,7 @@ uv run pytest tests/test_api_app.py -v
 - **1. Set Environment Map**
 
   - **Endpoint**: `POST /set-map`
-  - **Body**: `multipart/form-data` with a `file` field (`.txt` or `.json`)
+  - **Body**:  (`.txt` or `.json`)
 
   ```bash
   curl -F "file=@examples/map.txt" http://127.0.0.1:5000/set-map
@@ -84,6 +84,7 @@ uv run pytest tests/test_api_app.py -v
        -d '{"start_pos":[0,0],"commands":[["east",2]]}' \
        http://127.0.0.1:5000/clean
   ```
+  This will produce an error status as we're doing illegal moves.
 
 - **3. Execute Cleaning Session (Premium Model)**
 
@@ -97,7 +98,18 @@ uv run pytest tests/test_api_app.py -v
        -d '{"start_pos":[0,0],"commands":[["east",5]]}' \
        "http://127.0.0.1:5000/clean?model=premium"
   ```
+  This might produce an error or not. It is not deterministic as no dirt sensor really exists on the robot.
 
+Format of Respone:
+```
+{
+  "cleaned_tiles": list[tuple[int, int]]]
+  "count_cleaned_tiles": int,
+  "final_state": "error" or "completed",
+  "message": str,
+  "model_type": "premium" or "base"
+}
+```
 - **4. Download Cleaning History**
 
   Returns all past sessions as a CSV file.
