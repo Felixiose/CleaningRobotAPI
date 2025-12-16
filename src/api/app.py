@@ -105,10 +105,10 @@ def history():
     output = io.StringIO() # In-memory text stream
     writer = csv.writer(output) # CSV writer object
 
-    writer.writerow(['start_time', 'final_state', 'num_actions', 'num_cleaned_tiles', 'duration'])  # Header row  
+    writer.writerow(['model_type', 'start_time', 'final_state', 'num_actions', 'num_cleaned_tiles', 'duration'])  # Header row  
 
     for session in sessions:
-        writer.writerow([session.start_time, session.final_state, session.num_actions, session.num_cleaned_tiles, session.duration]) # Data rows
+        writer.writerow([session.model_type, session.start_time, session.final_state, session.num_actions, session.num_cleaned_tiles, session.duration]) # Data rows
     
     return Response(
         output.getvalue(),

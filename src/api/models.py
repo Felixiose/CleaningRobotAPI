@@ -5,6 +5,7 @@ db = SQLAlchemy()
 
 class CleaningSession(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    model_type = db.Column(db.String(20), default='base')
     start_time  = db.Column(db.DateTime, default=datetime.utcnow)
     final_state = db.Column(db.String(10)) 
     num_actions = db.Column(db.Integer)
@@ -12,7 +13,4 @@ class CleaningSession(db.Model):
     duration = db.Column(db.Float) # sec
 
     def to_csv_row(self) -> str:
-        return f"{self.id},{self.start_time},{self.final_state},{self.num_actions},{self.num_cleaned_tiles},{self.duration}\n"
-    
-
-    
+        return f"{self.id},{self.model_type},{self.start_time},{self.final_state},{self.num_actions},{self.num_cleaned_tiles},{self.duration}\n"
