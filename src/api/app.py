@@ -8,7 +8,7 @@ from datetime import datetime
 from flask import Flask, request, jsonify, Response
 
 from src.api.models import db, CleaningSession
-from src.core.robot import Robot  # Import Robot class
+from src.core.robot import Robot, PremiumRobot  # Import Robot and PremiumRobot classes
 from src.api.utils import parse_json_map, parse_txt_map  # Utility functions for parsing maps
 
 
@@ -59,10 +59,14 @@ def clean():
         return jsonify({"error": "No Grid set"}), 400 #4XX Client Error
 
     data = request.json
-    start_pos  = tuple(data.get('start_pos'))  # (x, y)
+    start_pos  = tuple(data.get('start_pos', (0, 0)))  # (x, y)
     commands   = data.get('commands')  # List of (direction, steps)
 
-    robot = Robot(grid=current_grid)
+    model_type = request.args.get('model', 'base').lower()
+    if model_type == 'premium':
+        robot = PremiumRobot(grid=current_grid)
+    else:
+        robot = Robot(grid=current_grid)
     
     start_time = time.time()
     status, cleaned_tiles = robot.execute_commands(commands, start_pos)
@@ -85,6 +89,7 @@ def clean():
         "final_state": status,
         "cleaned_tiles": cleaned_tiles,
         "count_cleaned_tiles": robot.get_num_cleaned_tiles(),
+        "model_type": model_type,
     }
     if status == "error":
         response['message'] = "Collision detected or invalid path"

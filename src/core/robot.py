@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from src.core.grid import Grid
-
+import random
 
 class RobotBase(ABC):
 
@@ -24,21 +24,26 @@ class RobotBase(ABC):
             self.position = new_position
             return True
         return False
+    
+    @abstractmethod
+    def _check_if_dirty(self, position: tuple[int, int]) -> bool:
+        pass
 
     def execute_commands(self, commands: list[tuple[str, int]], starting_pos: tuple[int, int]) -> str:
         if not self.grid.is_valid_move(starting_pos):
             return "error", list(self.cleaned_tiles)
         
-    
         self.position = starting_pos
-        self.cleaned_tiles.add(self.position)
+        if self._check_if_dirty(self.position):
+            self.cleaned_tiles.add(self.position)
         
         for direction, steps in commands: 
             for _ in range(steps):
                 success = self.move(direction)
                 if not success:
                     return "error", list(self.cleaned_tiles)
-                self.cleaned_tiles.add(self.position)
+                if self._check_if_dirty(self.position):
+                    self.cleaned_tiles.add(self.position)
         return "completed", list(self.cleaned_tiles)
                
     def get_num_cleaned_tiles(self) -> int:
@@ -47,14 +52,21 @@ class RobotBase(ABC):
     def reset_position(self) -> None:
         self.position = (0, 0)
 
-    # @abstractmethod
-    # def detect_dirty(self) -> bool:
-    #     pass
-            
-
+ 
+        
 class Robot(RobotBase):
     def __init__(self, grid: Grid):
         super().__init__(grid)
 
- 
+    def _check_if_dirty(self, position: tuple[int, int]) -> bool:
+        return True
+    
 
+class PremiumRobot(RobotBase):
+    def __init__(self, grid: Grid):
+        super().__init__(grid)
+
+    def _check_if_dirty(self, position: tuple[int, int]) -> bool:
+        if position in self.cleaned_tiles:
+            return False
+        return random.choice([True, False])
