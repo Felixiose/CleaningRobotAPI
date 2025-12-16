@@ -4,6 +4,7 @@ class GridBase(ABC):
     @abstractmethod
     def is_valid_move(self, position: tuple[int, int]) -> bool:
         pass
+ 
 
 class Grid(GridBase):
     def __init__(self, width: int, height: int, obstacles: set[tuple[int, int]]):
