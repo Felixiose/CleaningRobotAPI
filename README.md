@@ -158,4 +158,4 @@ Format of Respone:
 - **`src/api`**: Flask app, models, and map-parsing utilities
 - **`tests`**: pytest-based unit tests for core logic and REST API
 
-This should be enough to **install**, **run**, and **exercise** the CleaningRobotAPI locally with both the base and premium robot models.
+
