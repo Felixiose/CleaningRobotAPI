@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from app.core.grid import Grid
+from src.core.grid import Grid
 
 
 class RobotBase(ABC):

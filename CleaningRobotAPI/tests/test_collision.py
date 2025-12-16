@@ -1,5 +1,5 @@
-from app.core.grid import Grid
-from app.core.robot import Robot
+from src.core.grid import Grid
+from src.core.robot import Robot
 
 import unittest
 

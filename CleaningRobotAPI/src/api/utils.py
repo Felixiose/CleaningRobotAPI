@@ -1,4 +1,4 @@
-from CleaningRobotAPI.app.core.grid import Grid
+from src.core.grid import Grid
 
 def parse_txt_map(txt_data: str) -> Grid:
     lines = txt_data.strip().split('\n')
