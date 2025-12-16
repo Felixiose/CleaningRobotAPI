@@ -1,9 +1,27 @@
+"""
+Database Models
+---------------
+Defines the schema for persisting robot operation history.
+Uses **SQLAlchemy ORM** to map Python classes to database tables.
+"""
+
+
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
 db = SQLAlchemy() 
 
 class CleaningSession(db.Model):
+    """
+    id (int): Unique identifier for the session.
+    model_type (str): Discriminator column ('base' or 'premium').
+                          Useful for analyzing performance differences between models.
+    start_time (datetime): UTC timestamp of when the run began.
+    final_state (str): Outcome of the run ('completed' or 'error').
+    num_actions (int): Total commands executed.
+    num_cleaned_tiles (int): Total unique tiles processed.
+    duration (float): Execution time in seconds.
+    """
     id = db.Column(db.Integer, primary_key=True)
     model_type = db.Column(db.String(20), default='base')
     start_time  = db.Column(db.DateTime, default=datetime.utcnow)
