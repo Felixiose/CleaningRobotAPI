@@ -1,3 +1,8 @@
+"""
+Robot Control API
+-----------------
+Entry point for the Flask application. Manages cleaning sessions, grid configuration, and history exports.
+"""
 import json
 import io
 import csv
@@ -26,7 +31,17 @@ with app.app_context(): #Initialize the database in case it doesn't exist
 current_grid = None  # Global variable to hold the current grid
 
 @app.route('/set-map', methods=['POST'])
-def set_map():
+def set_map() -> Response:
+    """
+    Configures the environment grid for the robot.
+    
+    Accepts:
+        - .json file: Explicit tile definitions.
+        - .txt file: ASCII art representation (o=walkable, x=obstacle).
+    
+    Returns:
+        JSON response indicating success or specific parsing error.
+    """
     global current_grid # Use the global variable to store the grid
 
     if 'file' in request.files:
@@ -56,7 +71,17 @@ def set_map():
 
 
 @app.route('/clean', methods=['POST'])
-def clean():
+def clean() -> Response:
+    """
+    Executes a cleaning simulation based on the provided commands.
+    
+    Query Params:
+        model (str): 'base' (default) or 'premium'.
+        
+    Payload:
+        start_pos (list): [x, y]
+        commands (list): [[direction, steps], ...]
+    """
     global current_grid
     if current_grid is None:
         return jsonify({"error": "No Grid set"}), 400 #4XX Client Error
@@ -66,6 +91,8 @@ def clean():
     commands   = data.get('commands')  # List of (direction, steps)
 
     model_type = request.args.get('model', 'base').lower()
+    
+    # Bad Practice: Should use Factory Pattern or something similar
     if model_type == 'premium':
         robot = PremiumRobot(grid=current_grid)
     else:
@@ -102,7 +129,10 @@ def clean():
 
 
 @app.route('/history', methods=['GET'])
-def history():
+def history() -> Response:
+    """
+    Exports all cleaning sessions as a CSV file.
+    """
     sessions = CleaningSession.query.all()
 
     # Generate CSV 

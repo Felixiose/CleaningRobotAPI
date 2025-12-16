@@ -1,8 +1,24 @@
+"""
+Core Robot Logic
+----------------
+This module defines the movement and cleaning behavior of the robots.
+"""
 from abc import ABC, abstractmethod
 from src.core.grid import Grid
 import random
 
 class RobotBase(ABC):
+    """
+    Abstract Base Class representing a generic robot.
+    
+    Responsibilities:
+        - navigation logic (moving North/South/East/West)
+        - boundary/obstacle checking
+        - command execution loop
+        
+    Subclasses must implement:
+        - _check_if_dirty(position): Determination logic for cleaning a tile.
+    """
 
     def __init__(self, grid : Grid):
         self.grid = grid
@@ -10,6 +26,10 @@ class RobotBase(ABC):
         self.cleaned_tiles = set()
 
     def move(self, dir: str) -> bool:
+        """
+        Calculates the next coordinate based on direction.
+        Returns True if the move is valid and executed, False if blocked.
+        """
         if dir == "north":
             new_position = (self.position[0], self.position[1] - 1)
         elif dir == "south":
@@ -55,6 +75,10 @@ class RobotBase(ABC):
  
         
 class Robot(RobotBase):
+    """
+    Standard Robot Model.
+    Strategy: Always cleans every tile it visits.
+    """
     def __init__(self, grid: Grid):
         super().__init__(grid)
 
@@ -63,10 +87,16 @@ class Robot(RobotBase):
     
 
 class PremiumRobot(RobotBase):
+    """
+    Premium Robot Model.
+    Strategy: Uses sensors to skip tiles that are already clean or don't need cleaning.
+    """
     def __init__(self, grid: Grid):
         super().__init__(grid)
 
     def _check_if_dirty(self, position: tuple[int, int]) -> bool:
+        # In a real implementation, this would read hardware sensors.
+        # Here we simulate sensor readings with a random chance.
         if position in self.cleaned_tiles:
             return False
         return random.choice([True, False])
