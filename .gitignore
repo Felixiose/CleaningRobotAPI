@@ -1,0 +1,31 @@
+# --- Python Internals ---
+# Ignore bytecode (compiled python files)
+__pycache__/
+*.py[cod]
+*$py.class
+
+# --- Database ---
+# Ignore local database files 
+*.db
+*.sqlite3
+
+# --- Runtime / Instance Data ---
+instance/
+
+# --- Testing ---
+.pytest_cache/
+.coverage
+htmlcov/
+
+# --- Environment ---
+# Ignore virtual environments created by uv or python
+.venv/
+venv/
+env/
+
+# --- macOS ---
+.DS_Store
+
+# --- IDE Settings  ---
+.vscode/
+.idea/

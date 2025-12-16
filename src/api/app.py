@@ -6,17 +6,17 @@ from datetime import datetime
 
 
 from flask import Flask, request, jsonify, Response
+
 from src.api.models import db, CleaningSession
-
 from src.core.robot import Robot  # Import Robot class
-from src.api import utils  # Utility functions for parsing maps
-
-
-
+from src.api.utils import parse_json_map, parse_txt_map  # Utility functions for parsing maps
 
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///robot_history.db'
+
+import os
+basedir = os.path.abspath(os.path.dirname(__file__))
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'robot_history.db')
 
 db.init_app(app)    
 
@@ -34,17 +34,17 @@ def set_map():
         if filename.endswith('.json'):
             try: 
                 data = json.loads(content)
-                current_grid = utils.parse_json_map(data)
+                current_grid = parse_json_map(data)
             except json.JSONDecodeError:
-                return jsonify({"error", "Invalid JSON file"}), 400 #4XX Client Error
+                return jsonify({"error":  "Invalid JSON file"}), 400 #4XX Client Error
         elif filename.endswith('.txt'):
             try:
                 # Pass raw text content to the TXT parser
-                current_grid = utils.parse_txt_map(content)
+                current_grid = parse_txt_map(content)
             except Exception as e:
-                return jsonify({"error", "Invalid TXT file"}), 400 #4XX Client Error
+                return jsonify({"error" : "Invalid TXT file"}), 400 #4XX Client Error
         else:
-            return jsonify({"error", "Unsupported file type"}), 400 #4XX Client Error
+            return jsonify({"error" : "Unsupported file type"}), 400 #4XX Client Error
         
         return jsonify({"message": "Map set successfully"}), 200 #2XX Success
 
