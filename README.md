@@ -48,13 +48,7 @@ The project uses **pytest** and is configured in `pyproject.toml`.
 - **Run the full test suite**:
 
 ```bash
-uv run pytest -v
-```
-
-- **Run only the API tests**:
-
-```bash
-uv run pytest tests/test_api_app.py -v
+uv run python -m pytest
 ```
 
 ---
