@@ -26,8 +26,13 @@ class RobotBase(ABC):
         return False
 
     def execute_commands(self, commands: list[tuple[str, int]], starting_pos: tuple[int, int]) -> str:
-        # Check that format is correct
+        if not self.grid.is_valid_move(starting_pos):
+            return "error", list(self.cleaned_tiles)
+        
+    
         self.position = starting_pos
+        self.cleaned_tiles.add(self.position)
+        
         for direction, steps in commands: 
             for _ in range(steps):
                 success = self.move(direction)
