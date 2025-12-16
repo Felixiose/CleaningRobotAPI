@@ -20,6 +20,9 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'ro
 
 db.init_app(app)    
 
+with app.app_context(): #Initialize the database in case it doesn't exist
+    db.create_all()
+
 current_grid = None  # Global variable to hold the current grid
 
 @app.route('/set-map', methods=['POST'])
@@ -76,6 +79,7 @@ def clean():
 
     # Save session to DB
     session = CleaningSession(
+        model_type=model_type,  
         start_time=datetime.fromtimestamp(start_time),
         final_state=status,
         num_actions=sum(steps for _, steps in commands),

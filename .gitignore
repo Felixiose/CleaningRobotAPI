@@ -8,7 +8,8 @@ __pycache__/
 # Ignore local database files 
 *.db
 *.sqlite3
-
+history.csv
+history
 # --- Runtime / Instance Data ---
 instance/
 

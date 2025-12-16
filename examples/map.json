@@ -1,0 +1,8 @@
+{
+  "rows": 5,
+  "cols": 5,
+  "tiles": [
+    { "x": 2, "y": 0, "walkable": false },
+    { "x": 2, "y": 1, "walkable": false }
+  ]
+}
