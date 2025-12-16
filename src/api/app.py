@@ -2,13 +2,14 @@ import json
 import io
 import csv
 import time
+from datetime import datetime
 
 
 from flask import Flask, request, jsonify, Response
-from models import db, CleaningSession
+from src.api.models import db, CleaningSession
 
-from src.core.robot import Robot # Import Robot class
-import utils as utils     # Utility functions for parsing maps
+from src.core.robot import Robot  # Import Robot class
+from src.api import utils  # Utility functions for parsing maps
 
 
 
@@ -38,8 +39,8 @@ def set_map():
                 return jsonify({"error", "Invalid JSON file"}), 400 #4XX Client Error
         elif filename.endswith('.txt'):
             try:
-                data = content.splitlines()
-                current_grid = utils.parse_txt_map(data)
+                # Pass raw text content to the TXT parser
+                current_grid = utils.parse_txt_map(content)
             except Exception as e:
                 return jsonify({"error", "Invalid TXT file"}), 400 #4XX Client Error
         else:
@@ -47,7 +48,7 @@ def set_map():
         
         return jsonify({"message": "Map set successfully"}), 200 #2XX Success
 
-    return jsonify({"error", "No file provided"}), 400 #4XX Client Error
+    return jsonify({"error" : "No file provided"}), 400 #4XX Client Error
 
 
 
@@ -71,11 +72,11 @@ def clean():
 
     # Save session to DB
     session = CleaningSession(
-        start_time = start_time,
-        final_state = status,
-        num_actions = sum(steps for _, steps in commands),
-        num_cleaned_tiles = robot.get_num_cleaned_tiles(),
-        duration = duration
+        start_time=datetime.fromtimestamp(start_time),
+        final_state=status,
+        num_actions=sum(steps for _, steps in commands),
+        num_cleaned_tiles=robot.get_num_cleaned_tiles(),
+        duration=duration,
     )
     db.session.add(session)
     db.session.commit()
